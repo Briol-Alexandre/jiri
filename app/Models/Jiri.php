@@ -41,12 +41,12 @@ class Jiri extends Model
 
     function projects():BelongsToMany
     {
-        return $this->belongsToMany(Project::class, 'homeworks');
+        return $this->belongsToMany(Project::class, 'assignments');
     }
 
-    function homeworks():HasMany
+    function assignments():HasMany
     {
-        return $this->hasMany(Homework::class);
+        return $this->hasMany(Assignment::class);
     }
 
 }

@@ -15,7 +15,7 @@ class JiriFactory extends Factory
         return [
             'name' => $this->faker->sentence(2),
             'date' => Carbon::now()->format('Y-m-d H:i:s'),
-            'description' => $this->faker->text(50) || null,
+            'description' => $this->faker->sentence(10),
         ];
     }
 

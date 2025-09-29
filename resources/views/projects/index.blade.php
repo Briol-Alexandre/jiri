@@ -16,21 +16,22 @@
         @endif
     </head>
     <body>
-        <h1>
+        <h1 class="text-3xl text-center font-bold text-blue-500 mt-10">
             Jiri
         </h1>
-        <section>
-            <h2>Liste des projects</h2>
-
-            <ul>
+        <section class="px-4 gap-5 flex flex-col">
+            <h2 class="text-xl font-bold">Liste des Projets</h2>
+            <ul class="pl-5">
                 @foreach($projects as $project)
                     <li>
-                        <a href="/projects/{!! $roject->name !!}">
+                        <a href="{{route('projects.show', $project)}}" class="underline">
                             {!! $project->name !!}
                         </a>
                     </li>
                 @endforeach
             </ul>
+
+            <a href="{{route('projects.create')}}" class="p-2 hover:cursor-pointer w-fit bg-blue-400 text-white border transition-all border-blue-400 rounded-lg hover:bg-white hover:text-blue-400">Créer un projet</a>
         </section>
     </body>
 </html>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Jiri;
 use App\Models\Project;
 use Illuminate\Http\Request;
 
@@ -22,19 +23,28 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+        return view('projects.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store()
+    public function store(Request $request)
     {
-        $validated = request()->validate([
+        $validated = $request->validate([
             'name' => 'required|min:3',
             'description' => 'max:255',
         ]);
-        Project::create($validated);
+        $project = Project::create($validated);
+
+        $jiris = $request['jiris'];
+
+        foreach ($jiris as $jiri) {
+            $findJiri = Jiri::findOrFail($jiri);
+            $findJiri->projects()->attach($project);
+
+        }
+
 
         return redirect(route('projects.index'));
     }

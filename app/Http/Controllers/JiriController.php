@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ContactRoles;
+use App\Models\Contact;
+use App\Models\Implementation;
 use App\Models\Jiri;
+use App\Models\Project;
 use Illuminate\Http\Request;
 
 class JiriController extends Controller
@@ -31,12 +35,46 @@ class JiriController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|min:5',
+            'name' => 'required|min:3',
             'description' => 'max:255|nullable',
             'date' => 'date_format:Y-m-d H:i:s',
-
         ]);
-        Jiri::create($validated);
+
+        $jiri = Jiri::create($validated);
+
+        $contacts = $request['contacts'];
+
+        if (!empty($contacts)) {
+            foreach ($contacts as $contact) {
+                $role = $request['roles'][$contact];
+                $jiri->contacts()->attach($contact, ['role' => $role]);
+            }
+        }
+        $projects = $request['projects'];
+        if ($projects) {
+            foreach ($projects as $project) {
+                $jiri->projects()->attach($project);
+            }
+        }
+
+        if ($projects && $contacts) {
+            foreach ($contacts as $contact) {
+                $role = $request['roles'][$contact] ?? null;
+                if ($role === ContactRoles::Evaluated->value) {
+                    foreach ($projects as $projectId) {
+                        $assignment = $jiri->assignments()
+                            ->where('project_id', $projectId)
+                            ->first();
+                        if ($assignment) {
+                            Implementation::create([
+                                'contact_id' => $contact,
+                                'assignment_id' => $assignment->id
+                            ]);
+                        }
+                    }
+                }
+            }
+        }
 
         return redirect(route('jiris.index'));
     }

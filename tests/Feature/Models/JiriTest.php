@@ -33,7 +33,7 @@ it('ìs possible to retrieve many homework from a jiri', function () {
         )
         ->create();
 
-    $this->assertDatabaseCount('homeworks', 2);
+    $this->assertDatabaseCount('assignments', 2);
     expect($jiri->projects->count())->toBe(2)
-        ->and($jiri->homeworks->count())->toBe(2);
+        ->and($jiri->assignments()->count())->toBe(2);
 });

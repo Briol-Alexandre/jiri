@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Homework;
+use App\Models\Assignment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
 class HomeworkFactory extends Factory
 {
-    protected $model = Homework::class;
+    protected $model = Assignment::class;
 
     public function definition(): array
     {

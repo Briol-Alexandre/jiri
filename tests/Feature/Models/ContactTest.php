@@ -2,7 +2,7 @@
 
 use App\Enums\ContactRoles;
 use App\Models\Contact;
-use App\Models\Homework;
+use App\Models\Assignment;
 use App\Models\Jiri;
 use App\Models\Project;
 
@@ -10,29 +10,34 @@ it('is possible retrieve implementations from the students', function () {
 
     /*
      * Créer deux jiris
-     * Attacher deux projets -> homeworks
+     * Attacher deux projets -> assignments
      * Attacher un étudiant -> attendances -> implementations
      *
      * Vérifier au minimum qu'on a 4 implémentations associées à l'étudiant
      */
-
+    $contact = Contact::factory()->create();
     $jiris = Jiri::factory()
         ->hasAttached(
             Project::factory()
                 ->count(2)
         )
         ->count(2)
-        ->hasAttached(
-            Contact::factory()
-                ->count(1),
-            ['role' => ContactRoles::Evaluated->value]
-        )
-        ->create();
+        ->create()
+        ->each(function ($jiri) use ($contact) {
+            $jiri->contacts()->attach($contact, ['role' => ContactRoles::Evaluated->value]);
+        });
 
-    $this->assertDatabaseCount('homeworks', 4);
+
+    $jiris->each(function ($jiri) use ($contact){
+       $jiri->assignments()->each(function ($assignment) use ($contact){
+           $assignment->contacts()->attach($contact->id);
+       });
+    });
+
+    $this->assertDatabaseCount('assignments', 4);
     foreach ($jiris as $jiri) {
         expect($jiri->projects->count())->toBe(2)
-            ->and($jiri->homeworks->count())->toBe(2);
+            ->and($jiri->assignments()->count())->toBe(2);
     }
 
     $this->assertDatabaseCount('attendances', 2);
@@ -44,9 +49,9 @@ it('is possible retrieve implementations from the students', function () {
 
     $this->assertDatabaseCount('implementations', 4);
     foreach ($jiris as $jiri) {
-        $contact = $jiri->contacts;
-        expect($contact->homeworks->count())->toBe(2)
-            ->and($contact->implementations->count())->toBe(2);
+        $contact = $jiri->contacts->first();
+        expect($contact->assignments->count())->toBe(4)
+            ->and($contact->implementations->count())->toBe(4);
 
     }
 });

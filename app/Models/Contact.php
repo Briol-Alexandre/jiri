@@ -16,13 +16,18 @@ class Contact extends Model
         'email',
     ];
 
-    function homeworks():BelongsToMany
+    function assignments():BelongsToMany
     {
-        return $this->belongsToMany(Homework::class, 'implementations');
+        return $this->belongsToMany(Assignment::class, 'implementations');
     }
 
     function implementations():HasMany
     {
         return $this->hasMany(Implementation::class);
+    }
+
+    function attendances():HasMany
+    {
+        return $this->hasMany(Attendance::class);
     }
 }
