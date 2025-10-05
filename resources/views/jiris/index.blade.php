@@ -16,15 +16,13 @@
         @endif
     </head>
     <body>
-        <h1 class="text-3xl text-center font-bold text-blue-500 mt-10">
-            Jiri
-        </h1>
+        <x-nav/>
         <section class="px-4 gap-5 flex flex-col">
             <h2 class="text-xl font-bold">Liste des Jiris</h2>
             <ul class="pl-5">
                 @foreach($jiris as $jiri)
                     <li>
-                        <a href="{{route('jiris.show', $jiri)}}" class="underline">
+                        <a href="{{route('jiris.show', $jiri)}}" class="underline" title="Vers le jiri {{$jiri->name}}">
                             {!! $jiri->name !!}
                         </a>
                     </li>

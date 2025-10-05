@@ -16,9 +16,7 @@
         @endif
     </head>
     <body>
-        <h1 class="text-3xl text-center font-bold text-blue-500 mt-10">
-            Jiri
-        </h1>
+        <x-nav/>
         <section class="px-4 gap-5 flex flex-col">
             <h2 class="text-xl font-bold">Liste des Projets</h2>
             <ul class="pl-5">

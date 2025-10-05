@@ -20,21 +20,20 @@
         @endif
     </head>
     <body>
-        <h1>
-            Jiri
-        </h1>
-        <section>
-            <h2>Liste des Contacts</h2>
-
-            <ul>
+        <x-nav/>
+        <section class="px-4 gap-5 flex flex-col">
+            <h2 class="text-xl font-bold">Liste des Contacts</h2>
+            <ul class="pl-5">
                 @foreach($contacts as $contact)
                     <li>
-                        <a href="/contacts/{!! $contact->name !!}">
+                        <a href="{{route('contacts.show', $contact)}}" class="underline" title="Vers le contact {{$contact->name}}">
                             {!! $contact->name !!}
                         </a>
                     </li>
                 @endforeach
             </ul>
+
+            <a href="{{route('contacts.create')}}" class="p-2 hover:cursor-pointer w-fit bg-blue-400 text-white border transition-all border-blue-400 rounded-lg hover:bg-white hover:text-blue-400">Créer un contact</a>
         </section>
     </body>
 </html>

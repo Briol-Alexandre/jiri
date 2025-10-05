@@ -16,15 +16,7 @@
         @endif
     </head>
     <body>
-        <h1 class="text-3xl text-center font-bold text-blue-500 mt-10">
-            Jiri
-        </h1>
-        <nav class="flex justify-center gap-4 mt-5 underline text-blue-300">
-            <h2 class="sr-only">Navigation principale</h2>
-            <a class="hover:text-blue-500 transition-all" href="/jiris">Accéder aux Jiris</a>
-            <a class="hover:text-blue-500 transition-all" href="/contacts">Accéder aux Contacts</a>
-            <a class="hover:text-blue-500 transition-all" href="/projects">Accéder aux Projets</a>
-        </nav>
+        <x-nav />
 
     </body>
 </html>

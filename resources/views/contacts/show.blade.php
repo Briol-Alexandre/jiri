@@ -20,6 +20,7 @@
         @endif
     </head>
     <body>
+        <x-nav/>
         <p>{!! $contact->name !!}</p>
     </body>
 </html>

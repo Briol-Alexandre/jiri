@@ -16,6 +16,7 @@
         @endif
     </head>
     <body>
+        <x-nav/>
         {!! $project->name !!}
     </body>
 </html>
