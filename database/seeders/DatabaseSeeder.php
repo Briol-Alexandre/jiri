@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Contact;
 use App\Models\Jiri;
 use App\Models\Project;
 use App\Models\User;
@@ -22,7 +23,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'alexandre.briol@gmail.com',
         ]);
         /* Jiri::factory()->count(10)->create();
-         Project::factory()->count(10)->create();
-         Jiri::factory()->count(10)->create();*/
+        */
+         Project::factory()->count(3)->create();
+         Contact::factory()->count(3)->create();
     }
 }

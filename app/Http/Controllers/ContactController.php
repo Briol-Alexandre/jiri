@@ -23,7 +23,8 @@ class ContactController extends Controller
      */
     public function create()
     {
-        return view('contacts.create');
+        $jiris = Jiri::all();
+        return view('contacts.create', compact('jiris'));
     }
 
     /**

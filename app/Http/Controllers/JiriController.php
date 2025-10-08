@@ -26,7 +26,9 @@ class JiriController extends Controller
      */
     public function create()
     {
-        return view('jiris.create');
+        $contacts = Contact::all();
+        $projects = Project::all();
+        return view('jiris.create', compact('contacts', 'projects'));
     }
 
     /**

@@ -23,7 +23,8 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        return view('projects.create');
+        $jiris = Jiri::all();
+        return view('projects.create', compact('jiris'));
     }
 
     /**
@@ -39,10 +40,12 @@ class ProjectController extends Controller
 
         $jiris = $request['jiris'];
 
-        foreach ($jiris as $jiri) {
-            $findJiri = Jiri::findOrFail($jiri);
-            $findJiri->projects()->attach($project);
+        if ($jiris) {
+            foreach ($jiris as $jiri) {
+                $findJiri = Jiri::findOrFail($jiri);
+                $findJiri->projects()->attach($project);
 
+            }
         }
 
 
