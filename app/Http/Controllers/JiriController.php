@@ -8,6 +8,7 @@ use App\Models\Implementation;
 use App\Models\Jiri;
 use App\Models\Project;
 use Auth;
+use Gate;
 use Illuminate\Http\Request;
 
 class JiriController extends Controller
@@ -108,10 +109,11 @@ class JiriController extends Controller
      */
     public function update(Request $request, Jiri $jiri)
     {
+        Gate::authorize('update', $jiri);
         $jiri->update(['name' => $request['name']]);
         $jiri->save();
 
-        return redirect(route('jiris.show'), $jiri);
+        return redirect(route('jiris.show', $jiri));
     }
 
     /**
@@ -119,6 +121,8 @@ class JiriController extends Controller
      */
     public function destroy(Jiri $jiri)
     {
+        Gate::authorize('delete', $jiri);
+
         $jiri->delete();
 
         return redirect(route('jiris.index'));

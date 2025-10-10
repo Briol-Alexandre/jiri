@@ -35,13 +35,14 @@ class ContactController extends Controller
         $validated = $request->validate([
             'name' => 'required|min:8',
             'email' => 'email|unique:contacts|required',
-            'jiris' => 'array|nullable'
+            'jiris' => 'array|nullable',
+            'roles' => 'array|nullable',
         ]);
         $contact = Contact::create($validated);
         if (!empty($validated['jiris'])) {
             foreach ($validated['jiris'] as $jiri) {
                 $findJiri = Jiri::findOrFail($jiri);
-                $role = $request['roles'][$jiri];
+                $role = $validated['roles'][$jiri];
                 $findJiri->contacts()->attach($contact->id, ['role' => $role]);
             }
         }

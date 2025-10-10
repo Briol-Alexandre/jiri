@@ -20,7 +20,7 @@ it('is possible to directly link a jiri to the project in project.create', funct
         ->pluck('id', 'id')
         ->toArray();
 
-    $this->post(route('projects.store'), $form_data);
+    $this->post(route('projects.store'),  $form_data);
 
     assertDatabaseCount('assignments', 4);
 });
