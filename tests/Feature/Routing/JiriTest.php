@@ -9,7 +9,7 @@ use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
 
 beforeEach(function () {
-   $this->user= User::factory()->create();
+    $this->user = User::factory()->create();
 
     actingAs($this->user);
 });
@@ -17,7 +17,7 @@ beforeEach(function () {
 it('redirects to the Jiris index after the successful creation of a jiri',
     function () {
         // Arrange
-        $jiri = Jiri::factory()->make(['user_id'=>$this->user->id])->toArray();
+        $jiri = Jiri::factory()->raw();
 
         // Act
         $response = $this->post(route('jiris.store'), $jiri);
@@ -29,7 +29,7 @@ it('redirects to the Jiris index after the successful creation of a jiri',
     }
 );
 
-it('refuses a unauthenticated user to the route', function (){
+it('refuses a unauthenticated user to the route', function () {
     auth()->logout();
 
     $response = $this->get(route('jiris.index'));
@@ -40,7 +40,10 @@ it('refuses a unauthenticated user to the route', function (){
 
 it('shows the jiris on the jiris index page', function () {
     // Arrange
-    $jiris = Jiri::factory()->count(5)->create();
+    $jiris = Jiri::factory()
+        ->for($this->user)
+        ->count(5)
+        ->create();
 
     // Act
 
@@ -54,25 +57,25 @@ it('shows the jiris on the jiris index page', function () {
 });
 
 it('can update a jiri', function () {
-    $jiri = Jiri::factory()->create();
+    $jiri = Jiri::factory()->for($this->user)->create();
 
-    $this->patch('/jiris/'.$jiri->id, ['name' => 'toto']);
+    $this->patch('/jiris/' . $jiri->id, ['name' => 'toto']);
 
     assertDatabaseHas('jiris', ['name' => 'toto']);
 });
 
 it('shows a specific jiri', function () {
-    $jiri = Jiri::factory()->create();
+    $jiri = Jiri::factory()->for($this->user)->create();
 
-    $response = $this->get('/jiris/'.$jiri->id);
+    $response = $this->get('/jiris/' . $jiri->id);
 
     $response->assertSee($jiri->name);
 });
 
 it('deletes a jiri', function () {
-    $jiri = Jiri::factory()->create();
+    $jiri = Jiri::factory()->for($this->user)->create();
 
-    $this->delete('/jiris/'.$jiri->id);
+    $this->delete('/jiris/' . $jiri->id);
 
     assertDatabaseMissing('jiris', ['name' => $jiri->name]);
 });

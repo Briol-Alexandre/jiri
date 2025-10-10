@@ -7,14 +7,15 @@ use App\Models\User;
 use function Pest\Laravel\actingAs;
 
 beforeEach(function (){
-    $user = User::factory()->create();
+    $this->user = User::factory()->create();
 
-    actingAs($user);
+    actingAs($this->user);
 });
 
 it('is possible to directly link a contact to a jiri and assign his role in the contact.create view', function (){
    $form_data = Contact::factory()->raw();
    $form_data['jiris'] =  Jiri::factory()
+       ->for($this->user)
        ->create()
        ->pluck('id', 'id')
        ->toArray();

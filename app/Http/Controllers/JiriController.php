@@ -7,6 +7,7 @@ use App\Models\Contact;
 use App\Models\Implementation;
 use App\Models\Jiri;
 use App\Models\Project;
+use Auth;
 use Illuminate\Http\Request;
 
 class JiriController extends Controller
@@ -36,34 +37,39 @@ class JiriController extends Controller
      */
     public function store(Request $request)
     {
+
         $validated = $request->validate([
             'name' => 'required|min:3',
             'description' => 'max:255|nullable',
             'date' => 'date_format:Y-m-d H:i:s',
+            'contacts' => 'array|nullable',
+            'roles' => 'nullable|array',
+            'projects' => 'nullable|array'
         ]);
 
-        $jiri = Jiri::create($validated);
+        $jiri = auth()->user()->jiris()->create($validated);
 
-        $contacts = $request['contacts'];
 
-        if (!empty($contacts)) {
-            foreach ($contacts as $contact) {
-                $role = $request['roles'][$contact];
+
+        if (!empty($validated['contacts'])) {
+            foreach ($validated['contacts'] as $contact) {
+                $role = $validated['roles'][$contact];
                 $jiri->contacts()->attach($contact, ['role' => $role]);
             }
         }
-        $projects = $request['projects'];
-        if ($projects) {
-            foreach ($projects as $project) {
+
+
+        if (!empty($validated['projects'])) {
+            foreach ($validated['projects'] as $project) {
                 $jiri->projects()->attach($project);
             }
         }
 
-        if ($projects && $contacts) {
-            foreach ($contacts as $contact) {
-                $role = $request['roles'][$contact] ?? null;
+        if (!empty($validated['projects']) && !empty($validated['contacts'])) {
+            foreach ($validated['contacts'] as $contact) {
+                $role = $validated['roles'][$contact] ?? null;
                 if ($role === ContactRoles::Evaluated->value) {
-                    foreach ($projects as $projectId) {
+                    foreach ($validated['projects'] as $projectId) {
                         $assignment = $jiri->assignments()
                             ->where('project_id', $projectId)
                             ->first();
