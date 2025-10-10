@@ -1,15 +1,23 @@
 <?php
 
 use App\Models\Jiri;
+use App\Models\User;
 use Carbon\Carbon;
 
+use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
+
+beforeEach(function () {
+   $this->user= User::factory()->create();
+
+    actingAs($this->user);
+});
 
 it('redirects to the Jiris index after the successful creation of a jiri',
     function () {
         // Arrange
-        $jiri = Jiri::factory()->make()->toArray();
+        $jiri = Jiri::factory()->make(['user_id'=>$this->user->id])->toArray();
 
         // Act
         $response = $this->post(route('jiris.store'), $jiri);
@@ -20,6 +28,15 @@ it('redirects to the Jiris index after the successful creation of a jiri',
 
     }
 );
+
+it('refuses a unauthenticated user to the route', function (){
+    auth()->logout();
+
+    $response = $this->get(route('jiris.index'));
+
+    $response->assertRedirect(route('login'));
+});
+
 
 it('shows the jiris on the jiris index page', function () {
     // Arrange

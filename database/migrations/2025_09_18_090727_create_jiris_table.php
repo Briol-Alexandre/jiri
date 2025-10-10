@@ -17,7 +17,7 @@ return new class extends Migration
             $table->timestamp('date');
             $table->string('description')->nullable();
             // $table->string('place');
-            // $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
     }

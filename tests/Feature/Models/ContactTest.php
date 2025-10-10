@@ -5,7 +5,14 @@ use App\Models\Contact;
 use App\Models\Assignment;
 use App\Models\Jiri;
 use App\Models\Project;
+use App\Models\User;
+use function Pest\Laravel\actingAs;
 
+beforeEach(function (){
+    $user = User::factory()->create();
+
+    actingAs($user);
+});
 it('is possible retrieve implementations from the students', function () {
 
     /*

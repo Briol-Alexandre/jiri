@@ -2,9 +2,16 @@
 
 use App\Models\Contact;
 
+use App\Models\User;
+use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
 
+beforeEach(function (){
+   $user = User::factory()->create();
+
+   actingAs($user);
+});
 it('creates a contact and redirects to the contacts index',
     function () {
         $contact = Contact::factory()->make()->toArray();

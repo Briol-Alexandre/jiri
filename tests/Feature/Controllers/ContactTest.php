@@ -3,11 +3,14 @@
 use App\Enums\ContactRoles;
 use App\Models\Contact;
 use App\Models\Jiri;
+use App\Models\User;
+use function Pest\Laravel\actingAs;
 
-function assertDatabaseCount(string $string, int $int)
-{
+beforeEach(function (){
+    $user = User::factory()->create();
 
-}
+    actingAs($user);
+});
 
 it('is possible to directly link a contact to a jiri and assign his role in the contact.create view', function (){
    $form_data = Contact::factory()->raw();

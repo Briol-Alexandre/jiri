@@ -14,7 +14,7 @@
                 <x-checkbox :name="'remember-me'" :value="__('labels/auth.remember')"/>
                 <a href="/" class="text-xs text-blue-500 hover:underline">{!! __('labels/auth.forgot') !!}</a>
             </div>
-            <x-button :value="__('labels/buttons.login')"/>
+            <x-button :value="__('labels/buttons.register')"/>
             <div class="flex text-sm justify-around items-center flex-col lg:flex-row">
                 <p>{!! __('labels/auth.already') !!}</p>
                 <a href="{{route('login')}}"

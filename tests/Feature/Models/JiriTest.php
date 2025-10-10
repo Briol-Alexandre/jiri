@@ -4,8 +4,15 @@ use App\Enums\ContactRoles;
 use App\Models\Contact;
 use App\Models\Jiri;
 use App\Models\Project;
+use App\Models\User;
+use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
 
+beforeEach(function (){
+    $user = User::factory()->create();
+
+    actingAs($user);
+});
 it('is possible to retrieve many evaluated and many evaluators from a jiri', function () {
     $jiri = Jiri::factory()
         ->hasAttached(

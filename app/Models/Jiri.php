@@ -17,6 +17,7 @@ class Jiri extends Model
         'name',
         'date',
         'description',
+        'user_id'
     ];
 
     function contacts(): BelongsToMany

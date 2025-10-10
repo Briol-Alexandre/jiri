@@ -2,9 +2,16 @@
 
 use App\Models\Project;
 
+use App\Models\User;
+use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
 
+beforeEach(function (){
+    $user = User::factory()->create();
+
+    actingAs($user);
+});
 it('creates a project and redirects to the projects index',
     function () {
         $project = Project::factory()->make()->toArray();

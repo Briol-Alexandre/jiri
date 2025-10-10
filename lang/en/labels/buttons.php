@@ -2,5 +2,6 @@
 
 return [
     'jiri-create' => 'Create this jiri',
-    'login' => 'Login'
+    'login' => 'Login',
+    'register' => 'Register'
 ];

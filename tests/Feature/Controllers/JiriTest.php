@@ -4,18 +4,27 @@ use App\Enums\ContactRoles;
 use App\Models\Contact;
 use App\Models\Jiri;
 use App\Models\Project;
+use App\Models\User;
 use Carbon\Carbon;
 
 use Illuminate\Database\QueryException;
+use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseCount;
 use function Pest\Laravel\assertDatabaseEmpty;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
 
+
+beforeEach(function (){
+    $user = User::factory()->create();
+
+    actingAs($user);
+});
 it('creates a Jiri from the data provided by the request',
     function () {
         // Arrange
         $jiri = Jiri::factory()->make()->toArray();
+
 
         // Act
         $response = $this->post('/jiris', $jiri);

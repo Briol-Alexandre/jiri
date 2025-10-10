@@ -1,5 +1,6 @@
 <?php
 use App\Models\User;
+use function Pest\Laravel\actingAs;
 
 it('can display the login form', function () {
 
