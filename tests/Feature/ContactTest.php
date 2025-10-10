@@ -14,9 +14,9 @@ beforeEach(function (){
 });
 it('creates a contact and redirects to the contacts index',
     function () {
-        $contact = Contact::factory()->make()->toArray();
+        $contact = Contact::factory()->raw();
 
-        $response = $this->post('/contacts', $contact);
+        $response = $this->post(route('contacts.store'), $contact);
 
         $response->assertStatus(302);
         $response->assertRedirect('/contacts');

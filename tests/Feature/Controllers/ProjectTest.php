@@ -7,13 +7,14 @@ use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseCount;
 
 beforeEach(function (){
-    $user = User::factory()->create();
+    $this->user = User::factory()->create();
 
-    actingAs($user);
+    actingAs($this->user);
 });
 it('is possible to directly link a jiri to the project in project.create', function (){
     $form_data = Project::factory()->raw();
     $form_data['jiris'] = Jiri::factory()
+        ->for($this->user)
         ->count(4)
         ->create()
         ->pluck('id', 'id')

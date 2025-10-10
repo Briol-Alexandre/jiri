@@ -15,29 +15,36 @@ use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
 
 
-beforeEach(function (){
-    $user = User::factory()->create();
+beforeEach(function () {
+    $this->user = User::factory()->create();
 
-    actingAs($user);
+    actingAs($this->user);
 });
-it('creates a Jiri from the data provided by the request',
+
+it('creates a Jiri from the data provided in the request by the user',
     function () {
         // Arrange
-        $jiri = Jiri::factory()->make()->toArray();
+        $jiri = Jiri::factory()
+            ->raw();
 
 
         // Act
         $response = $this->post('/jiris', $jiri);
 
         // Assert
-        assertDatabaseHas('jiris', $jiri);
+        $response->assertValid();
+        assertDatabaseCount('jiris', 1);
 
     }
 );
 
+
 it('shows the jiris on the jiris index page', function () {
     // Arrange
-    $jiris = Jiri::factory()->count(5)->create();
+    $jiris = Jiri::factory()
+        ->for($this->user)
+        ->count(5)
+        ->create();
 
     // Act
 
@@ -51,7 +58,9 @@ it('shows the jiris on the jiris index page', function () {
 });
 
 it('can update a jiri', function () {
-    $jiri = Jiri::factory()->create();
+    $jiri = Jiri::factory()
+        ->for($this->user)
+        ->create();
 
     $this->patch('/jiris/' . $jiri->id, ['name' => 'toto']);
 
@@ -59,7 +68,9 @@ it('can update a jiri', function () {
 });
 
 it('shows a specific jiri', function () {
-    $jiri = Jiri::factory()->create();
+    $jiri = Jiri::factory()
+        ->for($this->user)
+        ->create();
 
     $response = $this->get('/jiris/' . $jiri->id);
 
@@ -67,7 +78,9 @@ it('shows a specific jiri', function () {
 });
 
 it('deletes a jiri', function () {
-    $jiri = Jiri::factory()->create();
+    $jiri = Jiri::factory()
+        ->for($this->user)
+        ->create();
 
     $this->delete('/jiris/' . $jiri->id);
 
@@ -147,8 +160,7 @@ it('is possible to add project to the jiri in the jiri create form', function ()
         ->count(5)
         ->create()
         ->pluck('id', 'id')
-        ->toArray()
-    ;
+        ->toArray();
 
     $this->post('/jiris', $form_data);
 
@@ -161,8 +173,7 @@ it('is possible to add projects and contacts to the jiri in the jiri create form
         ->count(5)
         ->create()
         ->pluck('id', 'id')
-        ->toArray()
-    ;
+        ->toArray();
     $form_data['contacts'] = Contact::factory()
         ->count(5)
         ->create()
@@ -184,8 +195,7 @@ it('creates the correct implementations with the project and contact linked to t
         ->count(5)
         ->create()
         ->pluck('id', 'id')
-        ->toArray()
-    ;
+        ->toArray();
     $form_data['contacts'] = Contact::factory()
         ->count(5)
         ->create()

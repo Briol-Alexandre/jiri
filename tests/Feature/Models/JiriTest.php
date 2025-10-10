@@ -9,12 +9,13 @@ use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
 
 beforeEach(function (){
-    $user = User::factory()->create();
+    $this->user = User::factory()->create();
 
-    actingAs($user);
+    actingAs($this->user);
 });
 it('is possible to retrieve many evaluated and many evaluators from a jiri', function () {
     $jiri = Jiri::factory()
+        ->for($this->user)
         ->hasAttached(
             Contact::factory()->count(3),
             ['role' => ContactRoles::Evaluated->value]
@@ -35,6 +36,7 @@ it('is possible to retrieve many evaluated and many evaluators from a jiri', fun
 
 it('ìs possible to retrieve many homework from a jiri', function () {
     $jiri = Jiri::factory()
+        ->for($this->user)
         ->hasAttached(
             Project::factory()->count(2)
         )

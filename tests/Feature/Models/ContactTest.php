@@ -9,9 +9,9 @@ use App\Models\User;
 use function Pest\Laravel\actingAs;
 
 beforeEach(function (){
-    $user = User::factory()->create();
+    $this->user = User::factory()->create();
 
-    actingAs($user);
+    actingAs($this->user);
 });
 it('is possible retrieve implementations from the students', function () {
 
@@ -24,6 +24,7 @@ it('is possible retrieve implementations from the students', function () {
      */
     $contact = Contact::factory()->create();
     $jiris = Jiri::factory()
+        ->for($this->user)
         ->hasAttached(
             Project::factory()
                 ->count(2)
