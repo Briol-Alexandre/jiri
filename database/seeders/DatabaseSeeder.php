@@ -18,13 +18,13 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
+        $user = User::factory()->create([
             'name' => 'Alexandre Briol',
             'email' => 'alexandre.briol@gmail.com',
         ]);
         /* Jiri::factory()->count(10)->create();
         */
          Project::factory()->count(3)->create();
-         Contact::factory()->count(3)->create();
+         Contact::factory()->for($user)->count(3)->create();
     }
 }

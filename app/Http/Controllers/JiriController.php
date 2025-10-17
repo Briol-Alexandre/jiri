@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ContactRoles;
+use App\Http\Requests\StoreJiriRequest;
 use App\Models\Contact;
 use App\Models\Implementation;
 use App\Models\Jiri;
@@ -51,7 +52,6 @@ class JiriController extends Controller
         $jiri = auth()->user()->jiris()->create($validated);
 
 
-
         if (!empty($validated['contacts'])) {
             foreach ($validated['contacts'] as $contact) {
                 $role = $validated['roles'][$contact];
@@ -85,7 +85,7 @@ class JiriController extends Controller
             }
         }
 
-        return redirect(route('jiris.index'));
+        return redirect(route('jiris.show', $jiri));
     }
 
     /**
@@ -99,18 +99,43 @@ class JiriController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Jiri $jiri)
     {
-        //
+        $assignments = $jiri->assignments()->with('project')->get()->pluck('project');
+        $assignmentsIds = $assignments->pluck('id');
+        $projects = Project::whereNotIn('id', $assignmentsIds)->get();
+        $assignedProjects = Project::whereIn('id', $assignmentsIds)->get();
+
+        $attendances = $jiri->attendances()->with('contact')->get()->pluck('contact');
+        $attendancesIds = $attendances->pluck('id');
+        $contacts = Contact::whereNotIn('id', $attendancesIds)->get();
+        $assignedContacts = Contact::whereIn('id', $attendancesIds)->get();
+
+        return view('jiris.edit', compact('jiri', 'contacts', 'assignedContacts', 'projects', 'assignedProjects'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Jiri $jiri)
+    public function update(StoreJiriRequest $request, Jiri $jiri)
     {
         Gate::authorize('update', $jiri);
-        $jiri->update(['name' => $request['name']]);
+        $validated = $request->validated();
+        $jiri->update($validated);
+
+        if (!empty($validated['contacts'])) {
+            $newContactList = [];
+            foreach ($validated['contacts'] as $contact) {
+                $role = $validated['roles'][$contact];
+                $newContactList[$contact] = ['role' => $role];
+            }
+            $jiri->contacts()->sync($newContactList);
+        }
+
+        if (!empty($validated['projects'])) {
+            $jiri->projects()->sync($validated['projects']);
+        }
+
         $jiri->save();
 
         return redirect(route('jiris.show', $jiri));

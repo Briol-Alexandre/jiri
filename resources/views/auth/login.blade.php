@@ -3,8 +3,8 @@
         <form action="{{ route('login.store') }}" method="post"
               class="flex flex-col gap-6 w-full lg:w-1/2 lg:border-l lg:border-l-gray-200 lg:pl-20">
             @csrf
-            <x-input :label="__('labels/auth.email')" :name="'email'" :type="'email'"/>
-            <x-input :label="__('labels/auth.password')" :name="'password'" :type="'password'" :placeholder="'••••••••••
+            <x-input :label="__('labels/auth.email')" :name="'email'" :type="'email'" value=""/>
+            <x-input :label="__('labels/auth.password')" :name="'password'" value="" :type="'password'" :placeholder="'••••••••••
 ••••••••••'"/>
 
             <div class="flex flex-col lg:flex-row items-center justify-between">

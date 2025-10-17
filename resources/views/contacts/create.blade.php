@@ -2,7 +2,7 @@
 <x-layouts.auth>
     <section>
         <h2 class="text-2xl text-center font-bold text-blue-500 my-10">{{__('headings.create_a_contact')}}</h2>
-        <form action="/contacts" method="post" class="flex flex-col gap-6 px-10 mx-auto ">
+        <form action="/contacts" method="post" class="flex flex-col gap-6 px-10 mx-auto" enctype="multipart/form-data">
             @csrf
             <div class="flex gap-6">
                 <fieldset class="w-1/2 flex flex-col gap-5 border-r-gray-200 border-r pr-4">
@@ -34,6 +34,19 @@
                             @enderror
                         </small>
                     </div>
+                    <div class="relative">
+                        <label for="avatar">
+                            {{__('labels/contact.avatar')}}
+                        </label>
+                        <input type="file"  id="avatar" value="{{old('avatar')}}" name="avatar"
+                               class="border border-gray-300 rounded-md block px-2 py-2 w-full">
+                        <small class="text-red-500 absolute -bottom-5">
+                            @error('avatar')
+                            {{ $message }}
+                            @enderror
+                        </small>
+                    </div>
+
                 </fieldset>
                 <fieldset class="w-1/2 flex flex-col gap-5">
                     <div class="flex justify-between items-center">
@@ -80,7 +93,7 @@
             </div>
             <button type="submit"
                     class="p-2 mt-5 bg-blue-400 hover:cursor-pointer mx-auto w-40 text-white border transition-all border-blue-400 rounded-md hover:bg-white hover:text-blue-400">
-                Créer le projet
+                Créer le contact
             </button>
         </form>
     </section>

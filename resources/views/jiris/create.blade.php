@@ -4,7 +4,7 @@
         <h2 class="text-2xl text-center font-bold text-blue-500 my-10">{!! __('headings.create_a_jiri') !!}</h2>
         <form action="/jiris" method="post" class="flex flex-col gap-6 px-10 mx-auto ">
             @csrf
-            <div class="flex gap-6 ">
+            <div class="flex gap-6">
                 <fieldset class="w-1/3 flex flex-col gap-5 border-r-gray-200 border-r pr-4">
                     <legend class="text-center font-bold text-xl mb-5">Créer le jiri</legend>
                     <div class="relative">

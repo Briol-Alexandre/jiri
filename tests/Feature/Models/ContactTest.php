@@ -22,7 +22,7 @@ it('is possible retrieve implementations from the students', function () {
      *
      * Vérifier au minimum qu'on a 4 implémentations associées à l'étudiant
      */
-    $contact = Contact::factory()->create();
+    $contact = Contact::factory()->for($this->user)->create();
     $jiris = Jiri::factory()
         ->for($this->user)
         ->hasAttached(

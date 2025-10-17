@@ -100,6 +100,7 @@ it('checks if field are invalid', function () {
 
 it('fails to create a new jiri in database when the name is missing data in the request', function () {
     $jiri = Jiri::factory()
+        ->for($this->user)
         ->withoutName()
         ->raw();
 
@@ -112,6 +113,7 @@ it('fails to create a new jiri in database when the name is missing data in the 
 
 it('fails to create a new jiri in database when the date is missing data in the request', function () {
     $jiri = Jiri::factory()
+        ->for($this->user)
         ->withoutDate()
         ->raw();
 
@@ -124,6 +126,7 @@ it('fails to create a new jiri in database when the date is missing data in the 
 
 it('fails to create a new jiri in database when the date is in wrong format data in the request', function () {
     $jiri = Jiri::factory()
+        ->for($this->user)
         ->withInvalidDate()
         ->raw();
 
@@ -136,10 +139,11 @@ it('fails to create a new jiri in database when the date is in wrong format data
 
 it('is possible to add contact to the jiri in the jiri create form', function () {
     //Arrange
-    $form_data = Jiri::factory()->raw();
+    $form_data = Jiri::factory()->for($this->user)->raw();
 
     $form_data['contacts'] = Contact::factory()
         ->count(5)
+        ->for($this->user)
         ->create()
         ->pluck('id', 'id')
         ->toArray();
@@ -155,7 +159,7 @@ it('is possible to add contact to the jiri in the jiri create form', function ()
 });
 
 it('is possible to add project to the jiri in the jiri create form', function () {
-    $form_data = Jiri::factory()->raw();
+    $form_data = Jiri::factory()->for($this->user)->raw();
     $form_data['projects'] = Project::factory()
         ->count(5)
         ->create()
@@ -168,7 +172,7 @@ it('is possible to add project to the jiri in the jiri create form', function ()
 });
 
 it('is possible to add projects and contacts to the jiri in the jiri create form', function () {
-    $form_data = Jiri::factory()->raw();
+    $form_data = Jiri::factory()->for($this->user)->raw();
     $form_data['projects'] = Project::factory()
         ->count(5)
         ->create()
@@ -176,6 +180,7 @@ it('is possible to add projects and contacts to the jiri in the jiri create form
         ->toArray();
     $form_data['contacts'] = Contact::factory()
         ->count(5)
+        ->for($this->user)
         ->create()
         ->pluck('id', 'id')
         ->toArray();
@@ -190,7 +195,7 @@ it('is possible to add projects and contacts to the jiri in the jiri create form
 });
 
 it('creates the correct implementations with the project and contact linked to the created jiri', function () {
-    $form_data = Jiri::factory()->raw();
+    $form_data = Jiri::factory()->for($this->user)->raw();
     $form_data['projects'] = Project::factory()
         ->count(5)
         ->create()
@@ -198,6 +203,7 @@ it('creates the correct implementations with the project and contact linked to t
         ->toArray();
     $form_data['contacts'] = Contact::factory()
         ->count(5)
+        ->for($this->user)
         ->create()
         ->pluck('id', 'id')
         ->toArray();

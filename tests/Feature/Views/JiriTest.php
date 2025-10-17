@@ -3,7 +3,7 @@
 use App\Models\User;
 use function Pest\Laravel\actingAs;
 
-beforeEach(function (){
+beforeEach(function () {
     $user = User::factory()->create();
 
     actingAs($user);
@@ -16,6 +16,6 @@ it('verifies that the jiris.create route displays a form to create a jiri',
         $response->assertStatus(200);
     })
     ->with([
-            ['fr', 'Créer un jiri'],
-            ['en', 'Create a jiri'],
-        ]);
+        ['fr', 'Créer un jiri'],
+        ['en', 'Create a jiri'],
+    ]);

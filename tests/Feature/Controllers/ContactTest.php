@@ -13,7 +13,7 @@ beforeEach(function (){
 });
 
 it('is possible to directly link a contact to a jiri and assign his role in the contact.create view', function (){
-   $form_data = Contact::factory()->raw();
+   $form_data = Contact::factory()->for($this->user)->raw();
    $form_data['jiris'] =  Jiri::factory()
        ->for($this->user)
        ->create()
@@ -29,3 +29,4 @@ it('is possible to directly link a contact to a jiri and assign his role in the 
     $this->assertDatabaseCount('attendances', 1);
 
 });
+

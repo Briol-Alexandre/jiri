@@ -17,12 +17,12 @@ it('is possible to retrieve many evaluated and many evaluators from a jiri', fun
     $jiri = Jiri::factory()
         ->for($this->user)
         ->hasAttached(
-            Contact::factory()->count(3),
+            Contact::factory()->for($this->user)->count(3),
             ['role' => ContactRoles::Evaluated->value]
 
         )
         ->hasAttached(
-            Contact::factory()->count(7),
+            Contact::factory()->for($this->user)->count(7),
             ['role' => ContactRoles::Evaluators->value]
         )
         ->create();

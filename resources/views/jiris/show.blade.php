@@ -1,46 +1,89 @@
-<x-layouts.auth>
-    <section>
-        <h2 class="text-2xl text-center font-bold text-blue-500 my-10">{!! $jiri->name !!}</h2>
-        <div class="flex">
-            <section class="w-1/2 text-center">
-                <h2 class="text-xl font-bold mb-5">Contacts</h2>
-                <table class="mx-auto w-1/2 text-left">
-                    <thead>
-                    <tr>
-                        <th>
-                            Contacts
-                        </th>
-                        <th>
-                            Rôle
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody class=" divide-y-1 divide-gray-300">
-                    @foreach($jiri->contacts as  $contact)
-                        <tr class="text-left">
-                            <td class="py-4">{{$contact->name}}</td>
-                            <td>{{$jiri->attendances()->findOrFail($contact->id)->role}}</td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            </section>
-            <section class="w-1/2 text-center">
-                <h2 class="text-xl font-bold">Projets</h2>
-                <ul class="">
-                    @foreach($jiri->projects as $project)
-                        <li>
-                            <p>{{$project->name}}</p>
-                        </li>
+@php use App\Enums\ContactRoles; @endphp
 
-                    @endforeach
+<x-layouts.auth>
+    <section class="max-w-5xl mx-auto bg-white rounded-2xl p-10 mt-10">
+        <h2 class="text-3xl font-extrabold text-center text-blue-600 mb-10">
+            {{ $jiri->name }}
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <section class="bg-gray-50 rounded-xl border border-gray-200 p-6">
+                <h3 class="text-2xl font-semibold text-center text-gray-800 mb-6">
+                    Informations du Jiri
+                </h3>
+                <ul class="space-y-4 text-gray-700">
+                    <li>
+                        <p class="font-bold text-gray-900">Nom :</p>
+                        <p>{{ $jiri->name }}</p>
+                    </li>
+                    <li>
+                        <p class="font-bold text-gray-900">Description :</p>
+                        <p>{{ $jiri->description ?? 'Aucune description' }}</p>
+                    </li>
+                    <li>
+                        <p class="font-bold text-gray-900">Date :</p>
+                        <p>{{ \Carbon\Carbon::parse($jiri->date)->format('d/m/Y') }}</p>
+                    </li>
                 </ul>
             </section>
+
+            <aside class="bg-gray-50 rounded-xl border border-gray-200 p-6">
+                <h3 class="text-2xl font-semibold text-center text-gray-800 mb-6">
+                    Participation et devoirs
+                </h3>
+
+                <section class="mb-8">
+                    <h4 class="text-xl font-semibold text-blue-500 mb-4 flex items-center gap-2">
+                        Participants
+                    </h4>
+                    @if($jiri->contacts->isNotEmpty())
+                        <ul class="space-y-3">
+                            @foreach($jiri->contacts as $contact)
+                                @php
+                                    $attendance = $jiri->attendances()->where('contact_id', $contact->id)->first();
+                                @endphp
+                                <li class="flex justify-between items-center bg-white border border-gray-200 rounded-lg px-4 py-2 hover:shadow transition">
+                                    <div>
+                                        <p class="font-semibold text-gray-800">{{ $contact->name }}</p>
+                                        <p class="text-sm text-gray-500">{{ $contact->email }}</p>
+                                    </div>
+                                    <span class="px-3 py-1 text-sm rounded-full
+                                        {{ $attendance && $attendance->role === ContactRoles::Evaluators ? 'bg-green-100 text-green-700' :
+                                           ($attendance && $attendance->role === ContactRoles::Evaluated ? 'bg-blue-100 text-blue-700' :
+                                           'bg-gray-100 text-gray-600') }}">
+                                        {{ $attendance->role ?? 'Non défini' }}
+                                    </span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="text-gray-500 text-sm italic">Aucun participant enregistré.</p>
+                    @endif
+                </section>
+
+                <section>
+                    <h4 class="text-xl font-semibold text-blue-500 mb-4 flex items-center gap-2">
+                        Projets
+                    </h4>
+                    @if($jiri->projects->isNotEmpty())
+                        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            @foreach($jiri->projects as $project)
+                                <li class="bg-white border border-gray-200 rounded-lg p-3 hover:shadow transition">
+                                    <p class="font-semibold text-gray-800">{{ $project->name }}</p>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="text-gray-500 text-sm italic">Aucun projet lié à ce Jiri.</p>
+                    @endif
+                </section>
+            </aside>
         </div>
-        <div class="flex justify-center">
-            <a href="{{route('jiris.edit', $jiri)}}"
-               class="p-2 mt-5 bg-orange-400 hover:cursor-pointer text-center w-40 text-white border transition-all border-orange-400 rounded-md hover:bg-white hover:text-orange-400">
-                Modifier ce jiri
+
+        <div class="flex justify-center mt-10">
+            <a href="{{ route('jiris.edit', $jiri) }}"
+               class="p-2 hover:cursor-pointer w-fit bg-orange-400 text-white border transition-all border-orange-400 rounded-lg hover:bg-white hover:text-orange-400">
+                Modifier ce Jiri
             </a>
         </div>
     </section>

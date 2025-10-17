@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreContactRequest;
+use App\Jobs\ProcessUploadedContactAvatar;
 use App\Models\Contact;
 use App\Models\Jiri;
+use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Laravel\Facades\Image;
 
 class ContactController extends Controller
 {
@@ -30,24 +35,49 @@ class ContactController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreContactRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|min:8',
-            'email' => 'email|unique:contacts|required',
-            'jiris' => 'array|nullable',
-            'roles' => 'array|nullable',
-        ]);
-        $contact = Contact::create($validated);
+        $validated = $request->validated();
+
+        /*if ($request->hasFile('avatar')) {
+            $image = Image::read($validated['avatar'])
+                ->resize(300, 300)
+                ->toJpeg(80);
+            $fileName = 'contact_' . uniqid() . '_300x300.jpg';
+            $path = "contacts/$fileName";
+            Storage::disk('public')->put($path, $image->toString());
+            $validated['avatar'] = $path;
+        }*/
+        if ($validated['avatar']) {
+            $new_original_file_name = uniqid() . '.' . config('contactavatars.image_type');
+            $full_path_to_original = Storage::putFileAs(config('contactavatars.original_path'),
+                $validated['avatar'],
+                $new_original_file_name
+            );
+            if ($full_path_to_original) {
+                $validated['avatar'] = $new_original_file_name;
+                ProcessUploadedContactAvatar::dispatch($full_path_to_original, $new_original_file_name);
+            } else {
+                $validated['avatar'] = '';
+            }
+        }
+
+        $contact = auth()->user()->contacts()->create($validated);
+
         if (!empty($validated['jiris'])) {
             foreach ($validated['jiris'] as $jiri) {
                 $findJiri = Jiri::findOrFail($jiri);
                 $role = $validated['roles'][$jiri];
                 $findJiri->contacts()->attach($contact->id, ['role' => $role]);
+                /*if ($findJiri->projects) {
+
+                }*/
             }
         }
 
-        return redirect(route('contacts.index'));
+
+
+        return redirect(route('contacts.show', $contact));
     }
 
     /**
@@ -69,12 +99,9 @@ class ContactController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Contact $contact)
+    public function update(StoreContactRequest $request, Contact $contact)
     {
-        $validated = $request->validate([
-            'name' => 'required|min:8',
-            'email' => 'email|required|unique:contacts,email,' . $contact->id,
-        ]);
+        $validated = $request->validated();
         $contact->update($validated);
         $contact->save();
 

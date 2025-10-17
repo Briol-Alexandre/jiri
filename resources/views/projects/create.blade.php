@@ -55,18 +55,6 @@
                                             <small class="text-xs">{{$jiri->description}}</small>
                                         </label>
                                     </div>
-                                    <div class="flex flex-col">
-                                        <label for="roles[{{$jiri->id}}]" class="text-right">
-                                            Rôle
-                                        </label>
-                                        <select name="roles[{{$jiri->id}}]" id="roles[{{$jiri->id}}]"
-                                                class="border-2 p-1 border-blue-400 rounded-lg">
-                                            <option
-                                                value="{{ContactRoles::Evaluated}}">{{ContactRoles::Evaluated->value}}</option>
-                                            <option
-                                                value="{{ContactRoles::Evaluators}}">{{ContactRoles::Evaluators->value}}</option>
-                                        </select>
-                                    </div>
                                 </div>
                             @endforeach
                         @else
