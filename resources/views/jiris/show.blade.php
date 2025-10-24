@@ -85,6 +85,15 @@
                class="p-2 hover:cursor-pointer w-fit bg-orange-400 text-white border transition-all border-orange-400 rounded-lg hover:bg-white hover:text-orange-400">
                 Modifier ce Jiri
             </a>
+            <form action="{{ route('jiris.destroy', $jiri) }}" method="POST" class="inline-block">
+                @csrf
+                @method('DELETE')
+                <button type="submit"
+                        class="p-2 w-fit bg-red-400 text-white border transition-all border-red-400 rounded-lg hover:bg-white hover:text-red-400">
+                    Supprimer ce Jiri
+                </button>
+            </form>
+
         </div>
     </section>
 </x-layouts.auth>

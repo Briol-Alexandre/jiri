@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ContactRoles;
+use App\Events\JiriCreatedEvent;
 use App\Http\Requests\StoreJiriRequest;
+use App\Mail\JiriCreatedMail;
 use App\Models\Contact;
 use App\Models\Implementation;
 use App\Models\Jiri;
@@ -11,17 +13,20 @@ use App\Models\Project;
 use Auth;
 use Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class JiriController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $jiris = Jiri::all();
+        $col = $request['col'];
+        $direction = $request->get('direction', 'asc');
+        $jiris = Jiri::orderBy($col, $direction)->get();
 
-        return view('jiris.index', compact('jiris'));
+        return view('jiris.index', compact('jiris', 'col', 'direction'));
     }
 
     /**
@@ -51,14 +56,12 @@ class JiriController extends Controller
 
         $jiri = auth()->user()->jiris()->create($validated);
 
-
         if (!empty($validated['contacts'])) {
             foreach ($validated['contacts'] as $contact) {
                 $role = $validated['roles'][$contact];
                 $jiri->contacts()->attach($contact, ['role' => $role]);
             }
         }
-
 
         if (!empty($validated['projects'])) {
             foreach ($validated['projects'] as $project) {
@@ -101,17 +104,22 @@ class JiriController extends Controller
      */
     public function edit(Jiri $jiri)
     {
-        $assignments = $jiri->assignments()->with('project')->get()->pluck('project');
-        $assignmentsIds = $assignments->pluck('id');
-        $projects = Project::whereNotIn('id', $assignmentsIds)->get();
-        $assignedProjects = Project::whereIn('id', $assignmentsIds)->get();
+        $contacts = Contact::all();
+        $projects = Project::all();
+        $roles = ContactRoles::cases();
 
-        $attendances = $jiri->attendances()->with('contact')->get()->pluck('contact');
-        $attendancesIds = $attendances->pluck('id');
-        $contacts = Contact::whereNotIn('id', $attendancesIds)->get();
-        $assignedContacts = Contact::whereIn('id', $attendancesIds)->get();
+        $selectedContacts = $jiri->attendances()
+            ->get()
+            ->pluck('role', 'contact_id')
+            ->toArray();
 
-        return view('jiris.edit', compact('jiri', 'contacts', 'assignedContacts', 'projects', 'assignedProjects'));
+        $selectedProjects = $jiri->projects()
+            ->pluck('projects.id')
+            ->toArray();
+
+
+        return view('jiris.edit',
+            compact('jiri', 'contacts', 'projects', 'roles', 'selectedContacts', 'selectedProjects'));
     }
 
     /**

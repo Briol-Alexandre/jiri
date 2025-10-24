@@ -11,11 +11,13 @@ class ProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $projects = Project::all();
+        $col = $request->get('col');
+        $direction = $request->get('direction', 'asc');
+        $projects = Project::orderBy($col, $direction)->get();
 
-        return view('projects.index', compact('projects'));
+        return view('projects.index', compact('projects', 'col', 'direction'));
     }
 
     /**

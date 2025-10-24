@@ -23,74 +23,39 @@
                             un contact</a>
                     </div>
                     <div class="relative flex flex-col justify-around">
-                        @if($contacts->count() !== 0 || $assignedContacts !== 0)
-                            @foreach($contacts as $contact)
 
-                                <div class="flex gap-10 border-b py-5 border-b-gray-300 last-of-type:border-b-0">
-                                    <div class="flex-1 flex items-center gap-5">
-                                        <input type="checkbox" name="contacts[{{$contact->id}}]"
-                                               id="contacts[{{$contact->id}}]" value="{{$contact->id}}">
-                                        <label for="contacts[{{$contact->id}}]" class="flex flex-col">
-                                            {{$contact->name}}
-                                            <small class="text-xs">
-                                                {{$contact->email}}
-                                            </small>
-                                        </label>
+                        @foreach($contacts as $contact)
+                            <div class="flex gap-10 border-b py-5 border-b-gray-300 last-of-type:border-b-0">
+                                <div class="flex-1 flex items-center gap-5">
+                                    <input type="checkbox" name="contacts[{{$contact->id}}]"
+                                           id="contacts[{{$contact->id}}]" value="{{$contact->id}}"
+                                        {{isset($selectedContacts[$contact->id])? 'checked': ''}}
+                                    >
+                                    <label for="contacts[{{$contact->id}}]" class="flex flex-col">
+                                        {{$contact->name}}
+                                        <small class="text-xs">
+                                            {{$contact->email}}
+                                        </small>
+                                    </label>
 
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <label for="roles[{{$contact->id}}]" class="text-right">
-                                            Rôle
-                                        </label>
-                                        <select name="roles[{{$contact->id}}]" id="roles[{{$contact->id}}]"
-                                                class="border-2 p-1 border-blue-400 rounded-lg">
-                                            <option
-                                                value="{{ContactRoles::Evaluated}}">{{ContactRoles::Evaluated->value}}</option>
-                                            <option
-                                                value="{{ContactRoles::Evaluators}}">{{ContactRoles::Evaluators->value}}</option>
-                                        </select>
-                                    </div>
                                 </div>
-                            @endforeach
-                            @foreach($assignedContacts as $contact)
-                                <div class="flex gap-10 border-b py-5 border-b-gray-300 last-of-type:border-b-0">
-                                    <div class="flex-1 flex items-center gap-5">
-                                        <input type="checkbox" name="contacts[{{$contact->id}}]"
-                                               id="contacts[{{$contact->id}}]" value="{{$contact->id}}" checked>
-                                        <label for="contacts[{{$contact->id}}]" class="flex flex-col">
-                                            {{$contact->name}}
-                                            <small class="text-xs">
-                                                {{$contact->email}}
-                                            </small>
-                                        </label>
-
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <label for="roles[{{$contact->id}}]" class="text-right">
-                                            Rôle
-                                        </label>
-                                        <select name="roles[{{$contact->id}}]" id="roles[{{$contact->id}}]"
-                                                class="border-2 p-1 border-blue-400 rounded-lg">
-                                            @if($contact->attendances->first()->role === ContactRoles::Evaluated->value)
-                                                <option
-                                                    value="{{ContactRoles::Evaluated}}"
-                                                    selected>{{ContactRoles::Evaluated->value}}</option>
-                                                <option
-                                                    value="{{ContactRoles::Evaluators}}">{{ContactRoles::Evaluators->value}}</option>
-                                            @else
-                                                <option
-                                                    value="{{ContactRoles::Evaluated}}">{{ContactRoles::Evaluated->value}}</option>
-                                                <option
-                                                    value="{{ContactRoles::Evaluators}}"
-                                                    selected>{{ContactRoles::Evaluators->value}}</option>
-                                            @endif
-                                        </select>
-                                    </div>
+                                <div class="flex flex-col">
+                                    <label for="roles[{{$contact->id}}]" class="text-right">
+                                        Rôle
+                                    </label>
+                                    @php
+                                        $role = $selectedContacts[$contact->id] ?? null;
+                                    @endphp
+                                    <select name="roles[{{$contact->id}}]" id="roles[{{$contact->id}}]"
+                                            class="border-2 p-1 border-blue-400 rounded-lg">
+                                        <option
+                                            value="{{ContactRoles::Evaluated}}" {{$role === ContactRoles::Evaluated->value ? 'selected' : ''}}>{{ContactRoles::Evaluated->value}}</option>
+                                        <option
+                                            value="{{ContactRoles::Evaluators}}" {{$role === ContactRoles::Evaluators->value ? 'selected' : ''}}>{{ContactRoles::Evaluators->value}}</option>
+                                    </select>
                                 </div>
-                            @endforeach
-                        @else
-                            <p>Pas encore de contact créé</p>
-                        @endif
+                            </div>
+                        @endforeach
                     </div>
                 </fieldset>
 
@@ -106,23 +71,12 @@
                             <div class="flex gap-10 border-b py-5 border-b-gray-300 last-of-type:border-b-0">
                                 <div class="flex-1 flex items-center gap-5">
                                     <input type="checkbox" name="projects[{{$project->id}}]"
-                                           id="projects[{{$project->id}}]" value="{{$project->id}}">
+                                           id="projects[{{$project->id}}]" value="{{$project->id}}"
+                                        {{in_array($project->id, $selectedProjects, true) ? 'checked' : ''}}
+                                    >
                                     <label for="projects[{{$project->id}}]" class="flex flex-col">
                                         {{$project->name}}
                                         <small class="text-xs">{{$project->description}}</small>
-                                    </label>
-                                </div>
-                            </div>
-                        @endforeach
-                        @foreach($assignedProjects as $assignedProject)
-                            <div class="flex gap-10 border-b py-5 border-b-gray-300 last-of-type:border-b-0">
-                                <div class="flex-1 flex items-center gap-5">
-                                    <input type="checkbox" name="projects[{{$assignedProject->id}}]"
-                                           id="projects[{{$assignedProject->id}}]" value="{{$assignedProject->id}}"
-                                           checked>
-                                    <label for="projects[{{$assignedProject->id}}]" class="flex flex-col">
-                                        {{$assignedProject->name}}
-                                        <small class="text-xs">{{$assignedProject->description}}</small>
                                     </label>
                                 </div>
                             </div>

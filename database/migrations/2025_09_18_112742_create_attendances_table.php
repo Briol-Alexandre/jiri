@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('jiri_id')->constrained();
-            $table->foreignId('contact_id')->constrained();
+            $table->foreignId('jiri_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('contact_id')->constrained()->cascadeOnDelete();
             /*$table->enum('role', ['evaluator', 'evaluated']);*/
             $table->string('role');
             $table->timestamps();

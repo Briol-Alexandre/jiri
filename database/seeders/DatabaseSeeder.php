@@ -22,8 +22,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Alexandre Briol',
             'email' => 'alexandre.briol@gmail.com',
         ]);
-        /* Jiri::factory()->count(10)->create();
-        */
+        Jiri::factory()->for($user)->count(10)->create();
+
          Project::factory()->count(3)->create();
          Contact::factory()->for($user)->count(3)->create();
     }

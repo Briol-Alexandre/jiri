@@ -56,7 +56,7 @@
                             {{__('labels/buttons.jiri-create')}}
                         </a>
                     </div>
-                    <div class="relative flex flex-col justify-around">
+                    <div class="relative flex flex-col justify-around h-[250px] overflow-scroll">
                         @if($jiris->count() !== 0)
                         @foreach($jiris as $jiri)
                             <div class="flex gap-10 border-b py-5 border-b-gray-300 last-of-type:border-b-0">

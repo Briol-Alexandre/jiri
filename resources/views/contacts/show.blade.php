@@ -73,5 +73,19 @@
                 </section>
             </aside>
         </div>
+        <div class="flex justify-center mt-10">
+            <a href="{{ route('contacts.edit', $contact) }}"
+               class="p-2 hover:cursor-pointer w-fit bg-orange-400 text-white border transition-all border-orange-400 rounded-lg hover:bg-white hover:text-orange-400">
+                Modifier ce contact
+            </a>
+            <form action="{{ route('contacts.destroy', $contact) }}" method="POST" class="inline-block">
+                @csrf
+                @method('DELETE')
+                <button type="submit"
+                        class="p-2 w-fit bg-red-400 text-white border transition-all border-red-400 rounded-lg hover:bg-white hover:text-red-400">
+                    Supprimer ce contact
+                </button>
+            </form>
+        </div>
     </section>
 </x-layouts.auth>
