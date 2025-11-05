@@ -2,7 +2,7 @@
 use App\Models\Jiri; ?>
 <x-layouts.auth>
     <section>
-        <h2 class="text-2xl text-center font-bold text-blue-500 my-10">{{__('headings.create_a_contact')}}</h2>
+        <h2 class="text-2xl font-bold text-blue-500 mb-10">{{__('headings.create_a_contact')}}</h2>
         <form action="{{route('contacts.update', $contact)}}" method="post" class="flex flex-col gap-6 px-10 mx-auto" enctype="multipart/form-data">
             @csrf
             @method('PUT')

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 
 class User extends Authenticatable
 {
@@ -52,6 +53,11 @@ class User extends Authenticatable
     public function jiris():HasMany
     {
         return $this->HasMany(Jiri::class);
+    }
+
+    public function upcomingJiris():HasMany
+    {
+        return $this->HasMany(Jiri::class)->where('date', '>', Carbon::now());
     }
 
     public function contacts():HasMany

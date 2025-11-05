@@ -14,7 +14,7 @@ class JiriFactory extends Factory
     {
         return [
             'name' => $this->faker->sentence(2),
-            'date' => Carbon::now()->format('Y-m-d H:i:s'),
+            'date' => Carbon::now()->addDays(rand(-30, 30))->format('Y-m-d H:i:s'),
             'description' => $this->faker->sentence(10),
         ];
     }

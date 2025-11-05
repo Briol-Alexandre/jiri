@@ -1,6 +1,6 @@
 <x-layouts.auth>
-    <section class="max-w-5xl mx-auto bg-white rounded-2xl p-10 mt-10">
-        <h2 class="text-3xl font-extrabold text-center text-blue-600 mb-10">
+    <section class="max-w-5xl mx-auto p-10">
+        <h2 class="text-3xl font-extrabold text-blue-600 mb-10">
             {{ $project->name }}
         </h2>
 

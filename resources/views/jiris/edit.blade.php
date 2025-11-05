@@ -1,7 +1,7 @@
 <?php use App\Enums\ContactRoles ?>
 <x-layouts.auth>
     <section>
-        <h2 class="text-2xl text-center font-bold text-blue-500 my-10">
+        <h2 class="text-2xl font-bold text-blue-500 mb-10">
             Modifier {{$jiri->name}}
         </h2>
         <form action="{{ route('jiris.update', $jiri) }}" method="post" class="flex flex-col gap-6 px-10 mx-auto ">

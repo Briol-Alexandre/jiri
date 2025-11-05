@@ -1,7 +1,7 @@
 @php $sizes = config('contactavatars.sizes') @endphp
 <x-layouts.auth>
-    <section class="max-w-5xl mx-auto bg-white rounded-2xl p-10 mt-10">
-        <h2 class="text-3xl font-extrabold text-center text-blue-600 mb-10">
+    <section class="max-w-5xl mx-auto bg-white rounded-2xl p-10">
+        <h2 class="text-3xl font-extrabold text-blue-600 mb-10">
             Liste des Contacts
         </h2>
 
@@ -10,7 +10,9 @@
                 <table class="w-full bg-white border border-gray-200 rounded-lg">
                     <thead class="bg-blue-50">
                     <tr>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b border-b-gray-200">Avatar</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b border-b-gray-200">
+                            Avatar
+                        </th>
                         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b border-b-gray-200">
                             <a href="
                             {{route('contacts.index', [
@@ -75,32 +77,47 @@
                     </thead>
                     <tbody>
                     @foreach($contacts as $contact)
+                        @php
+                            $user = $contact;
+                            $name = $user->name;
+                            $firstAndLastName = explode(' ', $name);
+                            $firstName = $firstAndLastName[0];
+                            $lastName = $firstAndLastName[1];
+                            $initials = $firstName[0] . $lastName[0];
+                        @endphp
                         <tr class="relative hover:bg-gray-50 transition">
                             <td class="px-4 py-3 border-b border-b-gray-200">
                                 <a href="{{route('contacts.show', $contact)}}" class="block">
-                                    <img
-                                        src="{{ asset('images/contacts/originals/'.$contact->avatar) }}"
-                                        alt="Avatar de {!! $contact->name !!}"
-                                        srcset="
+                                    @if($contact->avatar)
+
+                                        <img
+                                            src="{{ asset('images/contacts/originals/'.$contact->avatar) }}"
+                                            alt="Avatar de {!! $contact->name !!}"
+                                            srcset="
                                             @foreach($sizes as $size)
                                                 {{asset('images/contacts/variants/'.$size['width'].'x'.$size['height'].'/'.$contact->avatar)}}
                                                 {{$size['width']}}w
                                             @endforeach
                                         "
-                                        sizes="
+                                            sizes="
                                             @foreach($sizes as $size)
                                                 {{$size['width']}}
                                             @endforeach
                                         "
-                                        class="w-12 h-12 rounded-full object-cover"
-                                    >
+                                            class="w-12 h-12 rounded-full object-cover"
+                                        >
+                                    @else
+                                        {{$initials}}
+                                    @endif
                                 </a>
                             </td>
                             <td class="px-4 py-3 border-b border-b-gray-200 font-semibold text-gray-800">
-                                <a href="{{route('contacts.show', $contact)}}" class="block text-gray-800 hover:text-blue-600">{!! $contact->name !!}</a>
+                                <a href="{{route('contacts.show', $contact)}}"
+                                   class="block text-gray-800 hover:text-blue-600">{!! $contact->name !!}</a>
                             </td>
                             <td class="px-4 py-3 border-b border-b-gray-200 text-gray-600">
-                                <a href="{{route('contacts.show', $contact)}}" class="block text-gray-600 hover:text-blue-600">{{$contact->email}}</a>
+                                <a href="{{route('contacts.show', $contact)}}"
+                                   class="block text-gray-600 hover:text-blue-600">{{$contact->email}}</a>
                             </td>
                         </tr>
                     @endforeach

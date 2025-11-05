@@ -1,8 +1,8 @@
-@php use App\Enums\ContactRoles; @endphp
+@php use App\Enums\ContactRoles;use Carbon\Carbon; @endphp
 
 <x-layouts.auth>
-    <section class="max-w-5xl mx-auto bg-white rounded-2xl p-10 mt-10">
-        <h2 class="text-3xl font-extrabold text-center text-blue-600 mb-10">
+    <section class="max-w-5xl mx-auto p-10">
+        <h2 class="text-3xl font-extrabold text-blue-600 mb-10">
             {{ $jiri->name }}
         </h2>
 
@@ -22,7 +22,7 @@
                     </li>
                     <li>
                         <p class="font-bold text-gray-900">Date :</p>
-                        <p>{{ \Carbon\Carbon::parse($jiri->date)->format('d/m/Y') }}</p>
+                        <p>{{ Carbon::parse($jiri->date)->format('d/m/Y') }}</p>
                     </li>
                 </ul>
             </section>
