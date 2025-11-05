@@ -24,7 +24,7 @@ class JiriController extends Controller
     {
         $col = $request['col'];
         $direction = $request->get('direction', 'asc');
-        $jiris = Jiri::orderBy($col, $direction)->get();
+        $jiris = Jiri::orderBy($col, $direction)->paginate(8);
 
         return view('jiris.index', compact('jiris', 'col', 'direction'));
     }

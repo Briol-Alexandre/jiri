@@ -1,28 +1,62 @@
-@php use App\Enums\ContactRoles;use Carbon\Carbon; @endphp
-<x-layouts.auth>
+<?php
+
+use App\Models\Jiri;
+use Livewire\Attributes\Computed;
+use Livewire\Component;
+use App\Enums\ContactRoles;
+use Carbon\Carbon;
+
+new class extends Component {
+
+    public string $term = '';
+
+    #[Computed]
+    public function jiris()
+    {
+        return auth()->user()
+            ->jiris()
+            ->where('name', 'like', '%' . $this->term . '%')
+            ->orderBy('date', 'asc')
+            ->with(['attendances', 'projects', 'user'])
+            ->paginate(8);
+    }
+
+    public function delete(string $id)
+    {
+        $this->dispatch('delete_jiri', ['model_id' => $id]);
+    }
+};
+?>
+
+<div>
     <section class="max-w-5xl mx-auto p-10">
-        <h2 class="text-3xl font-extrabold text-blue-600 mb-10">
-            Liste des Jiris
-        </h2>
+        <div class="flex justify-between items-center mb-10">
+
+            <h2 class="text-3xl font-extrabold text-blue-600">
+                Liste des Jiris
+            </h2>
+            <a href="{{route('jiris.create')}}"
+               class="p-2 hover:cursor-pointer w-fit bg-blue-400 text-white border transition-all border-blue-400 rounded-lg hover:bg-white hover:text-blue-400">
+                + Ajouter un jiri
+            </a>
+        </div>
 
         <div class="bg-gray-50 rounded-xl border border-gray-200 p-6 overflow-x-auto">
-            <input type="search" placeholder="Rechercher…" class="bg-white border border-gray-100 p-2 rounded-md mb-4">
+            <input type="search" placeholder="Rechercher…" class="bg-white border border-gray-100 p-2 rounded-md mb-4"
+                   wire:model.live.debounce="term">
 
 
-            @if($jiris->isNotEmpty())
+            @if($this->jiris->isNotEmpty())
                 <table class="w-full bg-white border border-gray-200 rounded-lg">
                     <thead class="bg-blue-50">
                     <tr>
                         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b border-b-gray-200">
                             <a href="
-                                {{route('jiris.index', [
-                                        'col' => 'name',
-                                        'direction' => $col === 'name' && $direction === 'asc' ? 'desc' : 'asc',
-                                ])}}
+                                {{route('jiris.index')}}
                                 "
                                class="flex items-center gap-2">
                                 Nom
-                                <span>
+                                {{--<span>
                                         @if ($direction && $col === 'name')
                                         <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="25"
                                              height="25"
@@ -39,20 +73,17 @@
                                                       transform="rotate(-135 91.467 122.942) scale(.73957 .74269)"/>
                                             </svg>
                                     @endif
-                                    </span>
+                                    </span>--}}
 
                             </a>
                         </th>
                         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b border-b-gray-200">
                             <a href="
-                                {{route('jiris.index', [
-                                        'col' => 'description',
-                                        'direction' => $col === 'description' && $direction === 'asc' ? 'desc' : 'asc',
-                                ])}}
+                                {{route('jiris.index')}}
                                 "
                                class="flex">
                                 Description
-                                <span>
+                                {{--<span>
                                         @if ($direction && $col === 'description')
                                         <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="20"
                                              height="20"
@@ -69,20 +100,17 @@
                                                       transform="rotate(-135 91.467 122.942) scale(.73957 .74269)"/>
                                             </svg>
                                     @endif
-                                    </span>
+                                    </span>--}}
 
                             </a>
                         </th>
                         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b border-b-gray-200">
                             <a href="
-                                {{route('jiris.index', [
-                                        'col' => 'date',
-                                        'direction' => $col === 'date' && $direction === 'asc' ? 'desc' : 'asc',
-                                ])}}
+                                {{route('jiris.index')}}
                                 "
                                class="flex">
                                 Date
-                                <span>
+                                {{--<span>
                                         @if ($direction && $col === 'date')
                                         <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="20"
                                              height="20"
@@ -99,7 +127,7 @@
                                                       transform="rotate(-135 91.467 122.942) scale(.73957 .74269)"/>
                                             </svg>
                                     @endif
-                                    </span>
+                                    </span>--}}
 
                             </a>
                         </th>
@@ -112,12 +140,17 @@
                         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b border-b-gray-200">
                             Nb. d'évaluateurs
                         </th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b border-b-gray-200">
+                            Actions
+                        </th>
+
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($jiris as $jiri)
+                    @foreach($this->jiris as $jiri)
                         <tr class="hover:bg-gray-50 hover:cursor-pointer transition"
-                            data-href="{{route('jiris.show', $jiri)}}">
+                            data-href="{{route('jiris.show', $jiri)}}"
+                            wire:key="{{$jiri->id}}">
                             <td class="px-4 py-3 border-b border-b-gray-200 font-semibold text-gray-800">
                                 {!! $jiri->name !!}
                             </td>
@@ -144,23 +177,30 @@
                             <td class="px-4 py-3 border-b border-b-gray-200 text-gray-600">
                                 {{$jiri->evaluators()->count()}}
                             </td>
+                            <td class="px-4 py-3 border-b border-b-gray-200 text-gray-600 text-center"
+                                x-data="{open: false}">
+                                <button class="font-extrabold text-3xl" @click="open = !open">
+                                    …
+                                </button>
+                                <div x-show="open" class="text-sm flex">
+                                    <a href="#" wire:click="delete({{$jiri->id}})">Supprimer</a>
+                                    <a href="">Modifier</a>
+                                </div>
+                            </td>
                         </tr>
                     @endforeach
                     </tbody>
                 </table>
-            <div class="pt-4">
-                {{$jiris->links()}}
-            </div>
+                <div class="pt-4">
+                    {{$this->jiris->links()}}
+                </div>
             @else
                 <p class="text-gray-500 text-sm italic text-center">Aucun jiri enregistré.</p>
             @endif
         </div>
 
         <div class="flex justify-center mt-10">
-            <a href="{{route('jiris.create')}}"
-               class="p-2 hover:cursor-pointer w-fit bg-blue-400 text-white border transition-all border-blue-400 rounded-lg hover:bg-white hover:text-blue-400">
-                Créer un jiri
-            </a>
+
         </div>
     </section>
     <script>
@@ -174,4 +214,4 @@
         });
 
     </script>
-</x-layouts.auth>
+</div>
