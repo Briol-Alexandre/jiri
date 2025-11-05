@@ -2,6 +2,7 @@
 
 use App\Models\Jiri;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use App\Enums\ContactRoles;
 use Carbon\Carbon;
@@ -21,9 +22,15 @@ new class extends Component {
             ->paginate(8);
     }
 
-    public function delete(string $id)
+    public function delete(string $id): void
     {
-        $this->dispatch('delete_jiri', ['model_id' => $id]);
+        $this->dispatch('open_modal', ['form' => 'forms::jiri_delete', 'model_id' => $id]);
+    }
+
+    #[On('jiris_list_changed')]
+    public function reset_jiri_list()
+    {
+        unset($this->jiris);
     }
 };
 ?>

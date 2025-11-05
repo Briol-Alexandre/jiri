@@ -7,19 +7,21 @@ new class extends Component {
 
     public Jiri $jiri;
 
-    public function mount(string $id)
+    public function mount(string $model_id)
     {
-        $this->jiri = Jiri::findOrFail($id);
+        $this->jiri = Jiri::findOrFail($model_id);
     }
 
-    public function delete()
+    public function delete(): void
     {
         $this->jiri->delete();
+        $this->dispatch('jiris_list_changed');
+        $this->dispatch('close_modal');
     }
 };
 ?>
 
-<div>
+<div class="absolute top-0 right-0">
     <button wire:click="delete()">
         Êtes-vous sûr ?
     </button>
